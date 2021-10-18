@@ -6,12 +6,12 @@ set_console_keyboard_layout()
     read -p "Press enter to view available layouts..."
     ls /usr/share/kbd/keymaps/**/*.map.gz | less
     echo "To modify the layout, choose a corresponding file name to loadkeys, omitting path and file extension."
-    echo "For example, to set a German keyboard layout: `loadkeys de-latin1`"
+    echo "For example, to set a German keyboard layout: `loadkeys de-latin1`."
     while :
     do
 	echo "Enter console keyboard layout:"
 	read CONSOLE_KEYBOARD_LAYOUT
-	if ls /usr/share/kbd/keymaps/**/$CONSOLE_KEYBOARD_LAYOUT.map.gz
+	if ls /usr/share/kbd/keymaps/**/$CONSOLE_KEYBOARD_LAYOUT.map.gz > /dev/null
 	then
 	    loadkeys $CONSOLE_KEYBOARD_LAYOUT
 	    break
