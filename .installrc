@@ -1,0 +1,9 @@
+export KEYMAP="us"
+export EFI_SYSTEM_PARTITION=
+export SWAP_PARTITION=
+export ROOT_PARTITION=
+export ESSENTIAL_PACKAGES="base linux linux-firmware emacs networkmanager man-db man-pages texinfo"
+export REGION=
+export CITY=
+export HOSTNAME=
+export CPU_MANUFACTURER=
