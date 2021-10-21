@@ -9,7 +9,7 @@ then
     exit 1
 fi
 
-source ./installrc
+source ./.installrc
 
 if [ ! ls /usr/share/kbd/keymaps/**/$KEYMAP.map.gz > /dev/null ]
 then
