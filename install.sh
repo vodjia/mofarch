@@ -2,13 +2,14 @@
 
 echo "Preparing installation..."
 
+## Verify the boot mode
 if [ ! ls /sys/firmware/efi/efivars > /dev/null ]
 then
     echo "System is not booted in UEFI mode, which is currently not supported." > /dev/stderr
     exit 1
 fi
 
-source ./default.sh
+source ./installrc
 
 if [ ! ls /usr/share/kbd/keymaps/**/$KEYMAP.map.gz > /dev/null ]
 then
@@ -24,16 +25,19 @@ fi
 
 if [ ! fdisk -l /dev/$EFI_SYSTEM_PARTITION ]
 then
+    echo "EFI system partition '$EFI_SYSTEM_PARTITION' not found."
     exit 1
 fi
 
 if [ ! fdisk -l /dev/$SWAP_PARTITION ]
 then
+    echo "Swap partition '$SWAP_PARTITION' not found."
     exit 1
 fi
 
 if [ ! fdisk -l /dev/$ROOT_PARTITION ]
 then
+    echo "Root partition '$ROOT_PARTITION' not found."
     exit 1
 fi
 
@@ -49,13 +53,20 @@ then
     exit 1
 fi
 
+## Set the console keyboard layout
 echo "Setting the console keyboard layout..."
 loadkeys $KEYMAP
+
+## Update the system clock
 echo "Updating the system clock..."
 timedatectl set-ntp true
+
+## Format the partitions
 echo "Formatting the partitions..."
 mkfs.ext4 /dev/$ROOT_PARTITION
 mkswap /dev/$SWAP_PARTITION
+
+## Mount the file systems
 echo "Mounting the file systems..."
 echo "Mounting the root volume to `/mnt`..."
 mount /dev/$ROOT_PARTITION /mnt
@@ -101,6 +112,8 @@ echo "Creating the hostname file..."
 echo $HOSTNAME > /etc/hostname
 echo "Matching entries to hosts..."
 echo "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t$HOSTNAME" > /etc/hosts
+echo "Enabling NetworkManager..."
+systemctl enable NetworkManager.service
 
 ## Initramfs
 ### Creating a new initramfs is usually not required, because mkinitcpio was run on installation of the kernel package with pacstrap.
@@ -130,6 +143,73 @@ if [ $CPU_MANUFACTURER = "intel" ]
 then
     pacman -S intel-ucode
 fi
+
+# Post-installation
+
+## Paru
+echo "Installing paru..."
+git clone https://aur.archlinux.org/paru.git
+cd paru
+makepkg -si
+
+## Zsh
+echo "Installing zsh..."
+pacman -S zsh zsh-completions
+echo "Changing default shell to zsh..."
+chsh -s /usr/bin/zsh
+echo "Installing Oh My Zsh..."
+paru -S oh-my-zsh-git
+
+## Users and groups
+echo "Creating user '$USERNAME'..."
+useradd -m $USERNAME -s /usr/bin/zsh
+
+## Reflector
+echo "Installing Reflector..."
+pacman -S reflector
+echo "Enabling Reflector..."
+systemctl enable reflector.service
+
+## Xorg
+echo "Installing Xorg..."
+pacman -S xorg
+
+## Drivers
+echo "Installing Drivers..."
+if [ $GPU_MANUFACTURER = "amd" ]
+then
+    pacman -S xf86-video-amdgpu
+fi
+if [ $GPU_MANUFACTURER = "intel" ]
+then
+    pacman -S xf86-video-intel
+fi
+if [ $GPU_MANUFACTURER = "nvidia" ]
+then
+    pacman -S nvidia
+fi
+
+## KDE
+echo "Installing Plasma and KDE applications..."
+pacman -S plasma-meta kde-applications-meta
+
+## SDDM
+echo "Enabling SDDM..."
+systemctl enable sddm.service
+
+## Fonts
+echo "Installing Chinese fonts..."
+pacman -S wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk
+echo "Installing Microsoft fonts..."
+pacman -S ttf-ms-fonts
+
+## Browser
+echo "Installing $BROWSER..."
+pacman -S $BROWSER
+
+## Email client
+echo "Installing $EMAIL_CLIENT..."
+pacman -S $EMAIL_CLIENT
 
 # Reboot
 echo "Exiting the chroot environment..."

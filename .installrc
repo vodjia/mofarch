@@ -7,3 +7,7 @@ export REGION=
 export CITY=
 export HOSTNAME=
 export CPU_MANUFACTURER=
+export GPU_MANUFACTURER=
+export USERNAME=
+export BROWSER="firefox"
+export EMAIL_CLIENT="thunderbird"
