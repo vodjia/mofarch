@@ -1,43 +1,54 @@
+#!/bin/zsh
+
 # Pre-installation
 
 echo "Preparing installation..."
 
 ## Verify the boot mode
-if [ ! ls /sys/firmware/efi/efivars > /dev/null ]
+echo "Verying the boot mode..."
+if ! ls /sys/firmware/efi/efivars > /dev/null
 then
     echo "System is not booted in UEFI mode, which is currently not supported." > /dev/stderr
     exit 1
 fi
+echo "The system is booted in UEFI mode."
 
 source ./.installrc
 
-if [ ! ls /usr/share/kbd/keymaps/**/$KEYMAP.map.gz > /dev/null ]
+if [ ! -z $KEYMAP ]
 then
-    echo "Keyboard layout '$KEYMAP' not found." > /dev/stderr
-    exit 1
+    if ! ls /usr/share/kbd/keymaps/**/$KEYMAP.map.gz
+    then
+	echo "Keyboard layout '$KEYMAP' not found." > /dev/stderr
+	exit 1
+    fi
+else
+    echo "Using default keymap: US..."
 fi
 
-if [ ! ping -c 8 archlinux.org > /dev/null ]
+echo "Verifying internet connection..."
+if ! ping -c 8 archlinux.org > /dev/null
 then
     echo "No internet connection." > /dev/stderr
     exit 1
 fi
+echo "Internet connection established."
 
-if [ ! fdisk -l /dev/$EFI_SYSTEM_PARTITION ]
+if ! fdisk -l /dev/$EFI_SYSTEM_PARTITION
 then
-    echo "EFI system partition '$EFI_SYSTEM_PARTITION' not found."
+    echo "EFI system partition '$EFI_SYSTEM_PARTITION' not found." >> /dev/stderr
     exit 1
 fi
 
-if [ ! fdisk -l /dev/$SWAP_PARTITION ]
+if ! fdisk -l /dev/$SWAP_PARTITION
 then
-    echo "Swap partition '$SWAP_PARTITION' not found."
+    echo "Swap partition '$SWAP_PARTITION' not found." >> /dev/stderr
     exit 1
 fi
 
-if [ ! fdisk -l /dev/$ROOT_PARTITION ]
+if ! fdisk -l /dev/$ROOT_PARTITION
 then
-    echo "Root partition '$ROOT_PARTITION' not found."
+    echo "Root partition '$ROOT_PARTITION' not found." >> /dev/stderr
     exit 1
 fi
 
@@ -54,8 +65,11 @@ then
 fi
 
 ## Set the console keyboard layout
-echo "Setting the console keyboard layout..."
-loadkeys $KEYMAP
+if [ ! -z $KEYMAP ]
+then
+    echo "Setting the console keyboard layout..."
+    loadkeys $KEYMAP
+fi
 
 ## Update the system clock
 echo "Updating the system clock..."
@@ -64,7 +78,10 @@ timedatectl set-ntp true
 ## Format the partitions
 echo "Formatting the partitions..."
 mkfs.ext4 /dev/$ROOT_PARTITION
-mkswap /dev/$SWAP_PARTITION
+if [ ! -z $SWAP_PARTITION ]
+then
+    mkswap /dev/$SWAP_PARTITION
+fi
 
 ## Mount the file systems
 echo "Mounting the file systems..."
@@ -72,8 +89,11 @@ echo "Mounting the root volume to `/mnt`..."
 mount /dev/$ROOT_PARTITION /mnt
 echo "Creating remaining mount points..."
 mount /dev/$EFI_SYSTEM_PARTITION /mnt/efi
-echo "Enabling swap volume..."
-swapon /dev/$SWAP_PARTITION
+if [ ! -z $SWAP_PARTITION ]
+then
+    echo "Enabling swap volume..."
+    swapon /dev/$SWAP_PARTITION
+fi
 echo "genfstab will later detect mounted file systems and swap space"
 
 # Installation
@@ -104,8 +124,12 @@ echo "Generating the locales..."
 locale-gen
 echo "Setting the LANG variable..."
 cp ./etc/locale.conf /etc/locale.conf
-echo "Making the console keyboard layout persistent..."
-echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
+
+if [ ! -z $KEYMAP ]
+then
+    echo "Making the console keyboard layout persistent..."
+    echo "KEYMAP=$KEYMAP" > /etc/vconsole.conf
+fi
 
 ## Network configuration
 echo "Creating the hostname file..."
