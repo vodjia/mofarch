@@ -16,7 +16,7 @@ export EFI_SYSTEM_PARTITION=
 export SWAP_PARTITION=
 export ROOT_PARTITION=
 
-export ESSENTIAL_PACKAGES="base linux linux-firmware emacs networkmanager man-db man-pages texinfo"
+export ESSENTIAL_PACKAGES="base linux linux-firmware"
 
 export REGION=
 export CITY=
@@ -29,5 +29,9 @@ export GPU_MANUFACTURER=
 
 export USERNAME=
 
+export NETWORK_MANAGER="networkmanager"
+export NETWORK_MANAGER_SERVICE=${NETWORK_MANAGER}.service
+export TEXT_EDITOR="emacs"
+export DOCUMENTATION_TOOLS="man-db man-pages texinfo"
 export BROWSER="firefox"
 export EMAIL_CLIENT="thunderbird"

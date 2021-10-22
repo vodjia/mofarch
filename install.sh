@@ -136,8 +136,6 @@ echo "Creating the hostname file..."
 echo $HOSTNAME > /etc/hostname
 echo "Matching entries to hosts..."
 echo "127.0.0.1\tlocalhost\n::1\t\tlocalhost\n127.0.0.1\t$HOSTNAME" > /etc/hosts
-echo "Enabling NetworkManager..."
-systemctl enable NetworkManager.service
 
 ## Initramfs
 ### Creating a new initramfs is usually not required, because mkinitcpio was run on installation of the kernel package with pacstrap.
@@ -170,6 +168,24 @@ fi
 
 # Post-installation
 
+# Switch user
+echo "Switching to 'USERNAME'..."
+su - $USERNAME
+
+# Network manager
+echo "Installing network manager '$NETWORK_MANAGER'..."
+sudo pacman -S $NETWORK_MANAGER
+echo "Enabling '$NETWORK_MANAGER'..."
+systemctl enable $NETWORK_MANAGER_SERVICE
+
+# Text editor
+echo "Installing text editor '$TEXT_EDITOR'..."
+sudo pacman -S $TEXT_EDITOR
+
+# Documentation tools
+echo "Installing packages for accessing documentation in `man` and `info` pages: `$DOCUMENTATION_TOOLS`..."
+sudo pacman -S $DOCUMENTATION_TOOLS
+
 ## Paru
 echo "Installing paru..."
 git clone https://aur.archlinux.org/paru.git
@@ -178,7 +194,7 @@ makepkg -si
 
 ## Zsh
 echo "Installing zsh..."
-pacman -S zsh zsh-completions
+sudo pacman -S zsh zsh-completions
 echo "Changing default shell to zsh..."
 chsh -s /usr/bin/zsh
 echo "Installing Oh My Zsh..."
@@ -190,32 +206,32 @@ useradd -m $USERNAME -s /usr/bin/zsh
 
 ## Reflector
 echo "Installing Reflector..."
-pacman -S reflector
+sudo pacman -S reflector
 echo "Enabling Reflector..."
 systemctl enable reflector.service
 
 ## Xorg
 echo "Installing Xorg..."
-pacman -S xorg
+sudo pacman -S xorg
 
 ## Drivers
 echo "Installing Drivers..."
 if [ $GPU_MANUFACTURER = "amd" ]
 then
-    pacman -S xf86-video-amdgpu
+    sudo pacman -S xf86-video-amdgpu
 fi
 if [ $GPU_MANUFACTURER = "intel" ]
 then
-    pacman -S xf86-video-intel
+    sudo pacman -S xf86-video-intel
 fi
 if [ $GPU_MANUFACTURER = "nvidia" ]
 then
-    pacman -S nvidia
+    sudo pacman -S nvidia
 fi
 
 ## KDE
 echo "Installing Plasma and KDE applications..."
-pacman -S plasma-meta kde-applications-meta
+sudo pacman -S plasma-meta kde-applications-meta
 
 ## SDDM
 echo "Enabling SDDM..."
@@ -223,21 +239,19 @@ systemctl enable sddm.service
 
 ## Fonts
 echo "Installing Chinese fonts..."
-pacman -S wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk
+sudo pacman -S wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk
 echo "Installing Microsoft fonts..."
-pacman -S ttf-ms-fonts
+sudo pacman -S ttf-ms-fonts
 
 ## Browser
-echo "Installing $BROWSER..."
-pacman -S $BROWSER
+echo "Installing '$BROWSER'..."
+sudo pacman -S $BROWSER
 
 ## Email client
-echo "Installing $EMAIL_CLIENT..."
-pacman -S $EMAIL_CLIENT
+echo "Installing '$EMAIL_CLIENT'..."
+sudo pacman -S $EMAIL_CLIENT
 
 # Reboot
-echo "Exiting the chroot environment..."
-exit
 ## Optionally manually unmount all the partitions with umount -R /mnt: this allows noticing any "busy" partitions, and finding the cause with fuser.
 echo "Rebooting..."
 reboot
