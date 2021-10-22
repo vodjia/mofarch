@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Configure the system
 
 ## Time zone
@@ -55,6 +57,10 @@ then
     pacman -S intel-ucode
 fi
 
+## Users and groups
+echo "Creating user '$USERNAME'..."
+useradd -m $USERNAME -s /usr/bin/zsh
+
 # Switch user
-echo "Switching to 'USERNAME'..."
+echo "Switching to '$USERNAME'..."
 su - $USERNAME

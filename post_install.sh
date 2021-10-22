@@ -1,3 +1,5 @@
+#!/bin/sh
+
 # Post-installation
 
 ## Network manager
@@ -27,10 +29,6 @@ echo "Changing default shell to zsh..."
 chsh -s /usr/bin/zsh
 echo "Installing Oh My Zsh..."
 paru -S oh-my-zsh-git
-
-## Users and groups
-echo "Creating user '$USERNAME'..."
-useradd -m $USERNAME -s /usr/bin/zsh
 
 ## Reflector
 echo "Installing Reflector..."
@@ -81,5 +79,5 @@ sudo pacman -S $EMAIL_CLIENT
 
 # Reboot
 ## Optionally manually unmount all the partitions with umount -R /mnt: this allows noticing any "busy" partitions, and finding the cause with fuser.
-echo "Rebooting..."
-reboot
+echo "Installation is complete."
+echo "Please remove the installation media and reboot."
