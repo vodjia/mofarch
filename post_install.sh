@@ -16,14 +16,18 @@ sudo pacman -S $TEXT_EDITOR
 echo "Installing packages for accessing documentation in `man` and `info` pages: `$DOCUMENTATION_TOOLS`..."
 sudo pacman -S $DOCUMENTATION_TOOLS
 
+## Git
+echo "Installing Git..."
+sudo pacman -S git
+
 ## Paru
-echo "Installing paru..."
+echo "Installing Paru..."
 git clone https://aur.archlinux.org/paru.git
 cd paru
 makepkg -si
 
 ## Zsh
-echo "Installing zsh..."
+echo "Installing Zsh..."
 sudo pacman -S zsh zsh-completions
 echo "Changing default shell to zsh..."
 chsh -s /usr/bin/zsh
