@@ -16,8 +16,6 @@ export EFI_SYSTEM_PARTITION=
 export SWAP_PARTITION=
 export ROOT_PARTITION=
 
-export ESSENTIAL_PACKAGES="base linux linux-firmware"
-
 export REGION=
 export CITY=
 
