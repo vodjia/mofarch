@@ -105,6 +105,10 @@ echo "Generating fstab file..."
 genfstab -U /mnt >> /mnt/etc/fstab
 echo "Check the resulting /mnt/etc/fstab file, and edit it in case of errors."
 
+## Moving repository
+echo "Moving repository to the new system..."
+mv . /mnt/tmp
+
 ## Chroot
 echo "Changing root into the new system..."
 arch-chroot /mnt
