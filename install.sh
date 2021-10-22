@@ -107,7 +107,7 @@ echo "Check the resulting /mnt/etc/fstab file, and edit it in case of errors."
 
 ## Copying repository
 echo "Copying repository to the new system..."
-cp . /mnt/opt
+cp -r . /mnt/opt
 
 ## Chroot
 echo "Changing root into the new system..."
