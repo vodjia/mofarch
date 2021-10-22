@@ -59,7 +59,7 @@ fi
 
 ## Users and groups
 echo "Creating user '$USERNAME'..."
-useradd -m $USERNAME -s /usr/bin/zsh
+useradd -m $USERNAME
 
 # Switch user
 echo "Switching to '$USERNAME'..."
