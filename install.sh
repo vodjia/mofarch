@@ -13,7 +13,7 @@ then
 fi
 echo "The system is booted in UEFI mode."
 
-source ./.installrc
+source .resource
 
 if [ ! -z $KEYMAP ]
 then
@@ -107,7 +107,7 @@ echo "Check the resulting /mnt/etc/fstab file, and edit it in case of errors."
 
 ## Copying repository
 echo "Copying repository to the new system..."
-cp -r . /mnt/opt
+cp -r . /mnt/opt/$REPO_NAME
 
 ## Chroot
 echo "Changing root into the new system..."
