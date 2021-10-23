@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source .resource
+
 # Post-installation
 
 ## Network manager
@@ -68,10 +70,10 @@ echo "Enabling SDDM..."
 systemctl enable sddm.service
 
 ## Fonts
-echo "Installing Chinese fonts..."
-sudo pacman -S wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk
 echo "Installing Microsoft fonts..."
 sudo pacman -S ttf-ms-fonts
+echo "Installing extra fonts..."
+sudo pacman -S $EXTRA_FONTS
 
 ## Browser
 echo "Installing '$BROWSER'..."
@@ -80,6 +82,10 @@ sudo pacman -S $BROWSER
 ## Email client
 echo "Installing '$EMAIL_CLIENT'..."
 sudo pacman -S $EMAIL_CLIENT
+
+#### User password
+echo "Setting the user password..."
+passwd
 
 # Reboot
 ## Optionally manually unmount all the partitions with umount -R /mnt: this allows noticing any "busy" partitions, and finding the cause with fuser.
