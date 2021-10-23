@@ -1,5 +1,7 @@
 #!/bin/sh
 
+source .resource
+
 # Configure the system
 
 ## Time zone
@@ -58,9 +60,9 @@ then
 fi
 
 ## Users and groups
-echo "Creating user '$USERNAME'..."
-useradd -m $USERNAME
+echo "Creating user '$HOME_USERNAME'..."
+useradd -m $HOME_USERNAME
 
 # Switch user
-echo "Switching to '$USERNAME'..."
-su - $USERNAME
+echo "Switching to '$HOME_USERNAME'..."
+su - $HOME_USERNAME
