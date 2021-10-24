@@ -33,6 +33,6 @@ export NETWORK_MANAGER="networkmanager"
 export NETWORK_MANAGER_SERVICE=${NETWORK_MANAGER}.service
 export TEXT_EDITOR="emacs"
 export DOCUMENTATION_TOOLS="man-db man-pages texinfo"
-export EXTRA_FONTS="wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk"
 export BROWSER="firefox"
 export EMAIL_CLIENT="thunderbird"
+export EXTRA_PACKAGES="fcitx5-rime wqy-microhei wqy-microhei-lite wqy-bitmapfont wqy-zenhei ttf-arphic-ukai ttf-arphic-uming adobe-source-han-sans-cn-fonts adobe-source-han-serif-cn-fonts noto-fonts-cjk"
