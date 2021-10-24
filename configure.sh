@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source .resource
+source ./.resource
 
 # Configure the system
 
@@ -62,6 +62,14 @@ fi
 ## Users and groups
 echo "Creating user '$HOME_USERNAME'..."
 useradd -m $HOME_USERNAME
+
+## User password
+echo "Setting user password..."
+passwd $HOME_USERNAME
+
+## Sudo
+echo "Installing 'sudo'..."
+pacman -S sudo
 
 # Switch user
 echo "Switching to '$HOME_USERNAME'..."
