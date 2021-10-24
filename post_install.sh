@@ -1,6 +1,6 @@
 #!/bin/sh
 
-source .resource
+source ./.resource
 
 # Post-installation
 
@@ -72,8 +72,6 @@ systemctl enable sddm.service
 ## Fonts
 echo "Installing Microsoft fonts..."
 sudo pacman -S ttf-ms-fonts
-echo "Installing extra fonts..."
-sudo pacman -S $EXTRA_FONTS
 
 ## Browser
 echo "Installing '$BROWSER'..."
@@ -83,9 +81,17 @@ sudo pacman -S $BROWSER
 echo "Installing '$EMAIL_CLIENT'..."
 sudo pacman -S $EMAIL_CLIENT
 
-#### User password
-echo "Setting the user password..."
-passwd
+## Fcitx5
+echo "Installing Fcitx5..."
+sudo pacman -S fcitx5
+echo "GTK_IM_MODULE=fcitx" >> /etc/environment
+echo "QT_IM_MODULE=fcitx" >> /etc/environment
+echo "XMODIFIERS=@im=fcitx" >> /etc/environment
+echo "SDL_IM_MODULE=fcitx" >> /etc/environment
+
+## Extra packages
+echo "Installing extra packages..."
+sudo pacman -S $EXTRA_PACKAGES
 
 # Reboot
 ## Optionally manually unmount all the partitions with umount -R /mnt: this allows noticing any "busy" partitions, and finding the cause with fuser.
